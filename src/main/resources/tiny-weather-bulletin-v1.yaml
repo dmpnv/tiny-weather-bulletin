@@ -1,0 +1,255 @@
+openapi: 3.0.1
+info:
+  title: Tiny Weather Bulletin API
+  description: 'This is an API of weather bulletin'
+  version: 1.0.0
+paths:
+  '/forecasts':
+    get:
+      tags:
+        - forecasts
+      summary: Return the forecasts for all registered cities
+      operationId: getForecasts
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForecastsList'
+  '/forecasts/{city}':
+    get:
+      tags:
+        - forecasts
+      summary: Return the forecasts for a city
+      parameters:
+        - in: path
+          name: city
+          schema:
+            type: string
+          required: true
+      operationId: getForecastsByCity
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forecast'
+  '/cities':
+    get:
+      tags:
+        - places
+      summary: Returns the registered city list
+      operationId: getCities
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CityList'
+    post:
+      tags:
+        - places
+      summary: Register a new city
+      operationId: addCity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/City'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        422:
+          description: Unprocessable Entity, Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+  '/cities/{cityId}':
+    delete:
+      tags:
+        - places
+      summary: Unregister a city
+      operationId: unregisterCity
+      parameters:
+        - in: path
+          name: cityId
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+  '/cities/work-schedule':
+    get:
+      tags:
+        - work schedules
+        - places
+      summary: Returns the work schedule specific for this place
+      operationId: getWorkScheduleByCity
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkSchedule'
+  '/work-schedules/default':
+    get:
+      tags:
+        - work schedules
+      summary: Returns the default work schedule
+      operationId: getDefaultWorkschedule
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkSchedule'
+components:
+  schemas:
+    Forecast:
+      type: object
+      properties:
+        city:
+          type: string
+        daily:
+          type: array
+          items:
+            $ref: '#/components/schemas/DailyForecast'
+    DailyForecast:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          description: date in UTC
+        morning:
+          $ref: '#/components/schemas/ForecastData'
+        worktime:
+          $ref: '#/components/schemas/ForecastData'
+        evening:
+          $ref: '#/components/schemas/ForecastData'
+    ForecastData:
+      type: object
+      properties:
+        average-c:
+          type: integer
+          format: int64
+        average-f:
+          type: integer
+          format: int64
+        min-c:
+          type: integer
+          format: int64
+        min-f:
+          type: integer
+          format: int64
+        max-c:
+          type: integer
+          format: int64
+        max-f:
+          type: integer
+          format: int64
+        humidity:
+          type: integer
+          format: int64
+    ForecastsList:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ListMetadata'
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/Forecast'
+    City:
+      type: object
+      properties:
+        name:
+          type: string
+        country:
+          type: string
+        region:
+          type: string
+    CityList:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ListMetadata'
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/City'
+    WorkSchedule:
+      type: object
+      properties:
+        mon:
+          $ref: '#/components/schemas/Hours'
+        tue:
+          $ref: '#/components/schemas/Hours'
+        wed:
+          $ref: '#/components/schemas/Hours'
+        thu:
+          $ref: '#/components/schemas/Hours'
+        fri:
+          $ref: '#/components/schemas/Hours'
+        sat:
+          $ref: '#/components/schemas/Hours'
+        sun:
+          $ref: '#/components/schemas/Hours'
+    Hours:
+      type: object
+      properties:
+        start:
+          type: string
+        finish:
+          type: string
+    Result:
+      type: object
+      properties:
+        code:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationMessage'
+    ListMetadata:
+      type: object
+      properties:
+        page:
+          type: integer
+        per_page:
+          type: integer
+        page_count:
+          type: integer
+        total_count:
+          type: integer
+    ValidationMessage:
+      type: object
+      properties:
+        key:
+          type: string
+        message:
+          type: string
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+security:
+  - ApiKeyAuth: []
