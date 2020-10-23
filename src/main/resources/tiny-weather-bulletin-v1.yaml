@@ -53,6 +53,7 @@ paths:
       tags:
         - places
       summary: Register a new city
+      description: Register a new city, even on duplication doesn't fail but silently ignores it
       operationId: addCity
       requestBody:
         required: true
@@ -92,13 +93,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Result'
-  '/cities/work-schedule':
+  '/cities/{cityId}/work-schedule':
     get:
       tags:
         - work schedules
         - places
       summary: Returns the work schedule specific for this place
       operationId: getWorkScheduleByCity
+      parameters:
+        - in: path
+          name: cityId
+          schema:
+            type: string
+          required: true
       responses:
         200:
           description: successful operation
@@ -106,12 +113,56 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkSchedule'
+    put:
+      tags:
+        - work schedules
+        - places
+      summary: Save or Update the work schedule specific for this place
+      operationId: updateWorkSchedule
+      parameters:
+        - in: path
+          name: cityId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkSchedule'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+    delete:
+      tags:
+        - work schedules
+        - places
+      summary: Save or Update the work schedule specific for this place
+      operationId: removeWorkSchedule
+      parameters:
+        - in: path
+          name: cityId
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
   '/work-schedules/default':
     get:
       tags:
         - work schedules
       summary: Returns the default work schedule
-      operationId: getDefaultWorkschedule
+      operationId: getDefaultWorkSchedule
       responses:
         200:
           description: successful operation
@@ -119,12 +170,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkSchedule'
+    put:
+      tags:
+        - work schedules
+      summary: Save or Update the work schedule specific for this place
+      operationId: updateDefaultWorkSchedule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkSchedule'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
 components:
   schemas:
     Forecast:
       type: object
       properties:
         city:
+          type: string
+        timezone:
           type: string
         daily:
           type: array
@@ -146,51 +217,59 @@ components:
     ForecastData:
       type: object
       properties:
-        average-c:
-          type: integer
-          format: int64
-        average-f:
-          type: integer
-          format: int64
-        min-c:
-          type: integer
-          format: int64
-        min-f:
-          type: integer
-          format: int64
-        max-c:
-          type: integer
-          format: int64
-        max-f:
-          type: integer
-          format: int64
+        period:
+          $ref: '#/components/schemas/Period'
+        average:
+          type: number
+          format: double
+        min:
+          type: number
+          format: double
+        max:
+          type: number
+          format: double
         humidity:
           type: integer
-          format: int64
+          format: int32
     ForecastsList:
       type: object
       properties:
         metadata:
           $ref: '#/components/schemas/ListMetadata'
-        orders:
+        forecasts:
           type: array
           items:
             $ref: '#/components/schemas/Forecast'
+    Period:
+      type: object
+      properties:
+        start:
+          type: string
+        finish:
+          type: string
     City:
       type: object
       properties:
+        id:
+          type: string
         name:
           type: string
         country:
           type: string
         region:
           type: string
+        lon:
+          type: string
+        lat:
+          type: string
+        timezone:
+          type: string
     CityList:
       type: object
       properties:
         metadata:
           $ref: '#/components/schemas/ListMetadata'
-        orders:
+        cities:
           type: array
           items:
             $ref: '#/components/schemas/City'
@@ -222,6 +301,8 @@ components:
       type: object
       properties:
         code:
+          type: string
+        entityId:
           type: string
         errors:
           type: array

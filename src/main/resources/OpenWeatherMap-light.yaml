@@ -1,0 +1,166 @@
+openapi: "3.0.2"
+info:
+  title: "OpenWeatherMap API"
+  version: 1.0.0
+
+servers:
+  - url: "https://api.openweathermap.org/data/2.5"
+
+paths:
+  /weather:
+    get:
+      tags:
+        - Current Weather Data
+      operationId: CurrentWeatherData
+      parameters:
+        - $ref: '#/components/parameters/q'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Weather'
+        "404":
+          description: Not found response
+          content:
+            text/plain:
+              schema:
+                title: Weather not found
+                type: string
+                example: Not found
+  /onecall:
+    get:
+      tags:
+        - Current Weather Data
+      parameters:
+        - $ref: '#/components/parameters/lon'
+        - $ref: '#/components/parameters/lat'
+        - $ref: '#/components/parameters/exclude'
+        - $ref: '#/components/parameters/units'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Onecall'
+
+security:
+  - app_id: []
+
+tags:
+  - name: Current Weather Data
+    description: "Get current weather details"
+
+externalDocs:
+  description: API Documentation
+  url: https://openweathermap.org/api
+
+components:
+
+  parameters:
+    q:
+      name: q
+      in: query
+      schema:
+        type: string
+    lon:
+      name: lon
+      in: query
+      schema:
+        type: string
+    lat:
+      name: lat
+      in: query
+      schema:
+        type: string
+    exclude:
+      name: exclude
+      in: query
+      schema:
+        type: string
+    units:
+      name: units
+      in: query
+      schema:
+        type: string
+        enum: [standard, metric, imperial]
+        default: "imperial"
+  schemas:
+    Weather:
+      title: Successful response
+      type: object
+      properties:
+        coord:
+          $ref: '#/components/schemas/Coord'
+        timezone:
+          type: string
+    Onecall:
+      title: Successful response
+      type: object
+      properties:
+        lon:
+          type: string
+        lat:
+          type: string
+        timezone:
+          type: string
+        timezone_offset:
+          type: integer
+        current:
+          $ref: '#/components/schemas/WeatherData'
+
+        hourly:
+          type: array
+          items:
+            $ref: '#/components/schemas/WeatherData'
+    WeatherData:
+      type: object
+      properties:
+        dt:
+          type: integer
+          format: int64
+        sunrise:
+          type: integer
+        sunset:
+          type: integer
+        temp:
+          type: number
+          format: double
+        feels_like:
+          type: number
+          format: double
+        pressure:
+          type: integer
+        humidity:
+          type: integer
+        dew_point:
+          type: number
+          format: double
+        uvi:
+          type: number
+          format: double
+        clouds:
+          type: integer
+        visibility:
+          type: integer
+        wind_speed:
+          type: number
+          format: double
+        wind_deg:
+          type: integer
+    Coord:
+      title: Coord
+      type: object
+      properties:
+        lon:
+          type: string
+        lat:
+          type: string
+
+  securitySchemes:
+    app_id:
+      type: apiKey
+      name: appid
+      in: query

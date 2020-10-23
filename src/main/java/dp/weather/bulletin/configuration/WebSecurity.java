@@ -20,10 +20,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        /*http.csrf().disable().authorizeRequests().anyRequest().permitAll();*/
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/v1/admin/**")
-                .hasAuthority("ROLE_ADMIN")
                 .antMatchers("/", "/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**")
                 .permitAll()
                 .anyRequest()

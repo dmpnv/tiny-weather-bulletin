@@ -1,2 +1,37 @@
 ---
 initial-data:
+  cities:
+    - {
+      "id": "Milan",
+      "name": "Milan",
+      "country": "IT",
+      "region": "Lombardy"
+    }
+    - {
+      "id": "Rome",
+      "name": "Rome",
+      "country": "IT",
+      "region": "Lazio"
+    }
+    - {
+      "id": "Turin",
+      "name": "Turin",
+      "country": "IT",
+      "region": "Piedmont"
+    }
+  defaultSchedule:
+    mon:
+      start: '09:00'
+      finish: '18:00'
+    tue:
+      start: '09:00'
+      finish: '18:00'
+    wed:
+      start: '09:00'
+      finish: '18:00'
+    thu:
+      start: '09:00'
+      finish: '18:00'
+    fri:
+      start: '09:00'
+      finish: '18:00'

@@ -48,6 +48,10 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
             <version>${swagger-annotations-version}</version>
@@ -109,20 +113,43 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.11</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+<!--
             <exclusions>
                 <exclusion>
                     <groupId>org.junit.vintage</groupId>
                     <artifactId>junit-vintage-engine</artifactId>
                 </exclusion>
             </exclusions>
+-->
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-test</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -146,6 +173,47 @@
                 <version>5.0.0-beta2</version>
                 <executions>
                     <execution>
+                        <id>owm-client-generator</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/OpenWeatherMap-light.yaml</inputSpec>
+                            <generatorName>java</generatorName>
+                            <apiPackage>dp.weather.bulletin.owm.api</apiPackage>
+                            <modelPackage>dp.weather.bulletin.owm.model</modelPackage>
+                            <invokerPackage>dp.weather.bulletin.owm.client</invokerPackage>
+                            <configOptions>
+                                <library>resttemplate</library>
+                                <!--jersey1
+                                jersey2
+                                feign
+                                okhttp-gson
+                                retrofit2
+                                resttemplate
+                                webclient
+                                resteasy
+                                vertx
+                                google-api-client
+                                rest-assured
+                                native
+                                microprofile-->
+                                <generateApis>false</generateApis>
+                                <serializableModel>true</serializableModel>
+                                <snapshotVersion>true</snapshotVersion>
+                                <!--<interfaceOnly>true</interfaceOnly>-->
+                                <dateLibrary>java8</dateLibrary>
+                            </configOptions>
+                            <typeMappings>
+                                <typeMapping>OffsetDateTime=Instant</typeMapping>
+                            </typeMappings>
+                            <importMappings>
+                                <importMapping>java.time.OffsetDateTime=java.time.Instant</importMapping>
+                            </importMappings>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>rest-api-generator</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -204,5 +272,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
