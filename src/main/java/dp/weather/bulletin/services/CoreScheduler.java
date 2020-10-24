@@ -29,13 +29,14 @@ public class CoreScheduler {
     }
 
     @Scheduled(initialDelay = 1000L, fixedDelay = 1L)
-    public void eventHandler() throws InterruptedException {
-        processQueue();
+    public void eventHandler() {
+        try {
+            processQueue();
+        } catch (InterruptedException ignored) {}
     }
 
     public void processQueue() throws InterruptedException {
         String cityId = taskQueue.take();
-
         if (!StringUtils.isEmpty(cityId)) {
             if (ALL_CITIES.equals(cityId)) {
                 coreServices.syncAll();

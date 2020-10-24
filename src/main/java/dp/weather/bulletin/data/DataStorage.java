@@ -4,7 +4,6 @@ import dp.weather.bulletin.model.City;
 import dp.weather.bulletin.model.Forecast;
 import dp.weather.bulletin.model.ListMetadata;
 import dp.weather.bulletin.model.WorkSchedule;
-import dp.weather.bulletin.services.EventManager;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -8,6 +8,7 @@
         <version>2.3.4.RELEASE</version>
         <relativePath/>
     </parent>
+    <version>0.0.1.RELEASE</version>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>tiny-weather-bulletin</artifactId>
@@ -257,8 +258,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        <exclude>**/*IntegrationTest.java</exclude>
-                        <exclude>**/*ApplicationTest.java</exclude>
+                        <exclude>**/*E2ETest.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -272,4 +272,25 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>e2e-test</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*E2ETest.java</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/*UnitTest.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

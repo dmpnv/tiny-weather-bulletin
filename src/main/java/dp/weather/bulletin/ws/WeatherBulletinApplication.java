@@ -36,7 +36,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 @EnableConfigurationProperties(InitialData.class)
 public class WeatherBulletinApplication {
 
-	@Value("${owm.apikey}")
+	@Value("${APIKEY}")
 	private String apiKey;
 
 	public static void main(String[] args) {

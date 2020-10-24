@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(classes = WeatherBulletinApplication.class)
-class CoreServicesIntegrationTest {
+class CoreServicesE2ETest {
 
     @Autowired
     private CoreServices coreServices;
