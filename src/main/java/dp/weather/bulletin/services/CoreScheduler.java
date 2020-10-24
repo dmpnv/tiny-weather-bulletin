@@ -1,12 +1,12 @@
 package dp.weather.bulletin.services;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.TimeUnit;
 
 import static dp.weather.bulletin.services.EventManager.ALL_CITIES;
 
@@ -25,23 +25,21 @@ public class CoreScheduler {
 
     @Scheduled(initialDelay = 10000L, fixedRate = 60*60*1000L)
     public void hourly() {
-        coreServices.syncAll();
+        taskQueue.add(ALL_CITIES);
     }
 
-    @Scheduled(initialDelay = 0L, fixedRate = 60*1000L)
-    public void minutely() {
-        try {
-            processQueue();
-        } catch (InterruptedException ignored) {}
+    @Scheduled(initialDelay = 1000L, fixedDelay = 1L)
+    public void eventHandler() throws InterruptedException {
+        processQueue();
     }
 
     public void processQueue() throws InterruptedException {
-        String cityId;
+        String cityId = taskQueue.take();
 
-        while((cityId = taskQueue.poll(59L, TimeUnit.SECONDS)) != null) {
+        if (!StringUtils.isEmpty(cityId)) {
             if (ALL_CITIES.equals(cityId)) {
-                taskQueue.clear();
                 coreServices.syncAll();
+                taskQueue.clear();
             }else {
                 coreServices.syncCityWeather(cityId);
             }

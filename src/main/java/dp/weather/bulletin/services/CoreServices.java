@@ -10,6 +10,7 @@ import dp.weather.bulletin.owm.model.Weather;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import reactor.core.publisher.Flux;
 
 import java.util.Optional;
@@ -56,6 +57,9 @@ public class CoreServices {
 
         public Flux<?> syncCityWeather(Flux<City> cityFlux) {
         return cityFlux.map(city -> syncCityCoord(city))
+                .onErrorResume(HttpClientErrorException.class, e -> {
+                    return Flux.empty();
+                })
                 .doOnNext(city -> {
                     Onecall onecall =
                             currentWeatherDataApi.onecallGet(city.getLon(),

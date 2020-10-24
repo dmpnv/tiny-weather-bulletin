@@ -1,9 +1,7 @@
 package dp.weather.bulletin.ws;
 
 import com.fasterxml.jackson.databind.Module;
-import dp.weather.bulletin.data.DataStorage;
 import dp.weather.bulletin.data.InitialData;
-import dp.weather.bulletin.owm.api.CurrentWeatherDataApi;
 import dp.weather.bulletin.owm.client.ApiClient;
 import org.openapitools.jackson.nullable.JsonNullableModule;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,21 +10,18 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @SpringBootApplication
 @EnableScheduling
-@PropertySource("file:/opt/twb.properties")
+@EnableAsync
 @ComponentScan(basePackages = {"dp.weather.bulletin.client",
 							   "dp.weather.bulletin.api",
 							   "dp.weather.bulletin.model",
